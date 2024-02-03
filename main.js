@@ -1,11 +1,23 @@
+const resultContainer = document.getElementById("resultContainer")
+const container = document.querySelector('.esconder')
+const cepForm = document.getElementById("cepForm")
+const cepInput = document.getElementById("cepInput")
+
+
+cepForm.addEventListener("submit", function(event) {
+  event.preventDefault()
+  const cep = cepInput.value
+  buscarCep(cep)
+  container.setAttribute("style", "visibility: visible !important")
+})
+
 function buscarCep(cep) {
-  var url = `https://viacep.com.br/ws/${cep}/json/`;
+  const url = `https://viacep.com.br/ws/${cep}/json/`
 
   fetch(url)
     .then(response => response.json())
     .then(data => {
       if(!data.erro) {
-        var resultContainer = document.getElementById("resultContainer");
         resultContainer.innerHTML = `
           <p><strong>CEP:</strong> ${data.cep}</p>
           <p><strong>Logradouro:</strong> ${data.logradouro}</p>
@@ -15,20 +27,14 @@ function buscarCep(cep) {
           <p><strong>Estado:</strong> ${data.uf}</p>
         `;
       } else {
-        var resultContainer = document.getElementById("resultContainer");
-        resultContainer.innerHTML = "CEP não encontrado.";
+        resultContainer.innerHTML = "CEP não encontrado."
       }
     })
     .catch(error => {
-      var resultContainer = document.getElementById("resultContainer");
-      resultContainer.innerHTML = "Ocorreu um erro na solicitação. Verifique sua conexão ou tente novamente mais tarde."
-    });
+      resultContainer.innerHTML = `
+        <p class="erro">Ocorreu um erro na solicitação.<p>
+        <p class="erro-message">Verifique sua conexão ou tente novamente mais tarde.<p>
+      `
+      console.error(error)
+    })
 }
-
-var cepForm = document.getElementById("cepForm");
-cepForm.addEventListener("submit", function(event) {
-  event.preventDefault();
-  var cepInput = document.getElementById("cepInput");
-  var cep = cepInput.value;
-  buscarCep(cep);
-})
